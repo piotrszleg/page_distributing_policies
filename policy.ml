@@ -25,9 +25,9 @@ class policy requests frames_count processes =
       in for time=0 to last_request do
         self#update time
       done ;
-      List.fold_left 
-        (fun rest process ->(rest+process#page_faults))
-        0
-        processes
+      
+
+    method print=
+      Printf.printf "total page faults %d"
   end
 ;;
