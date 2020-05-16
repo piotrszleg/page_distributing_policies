@@ -17,8 +17,7 @@ let generate_requests_in_phase phase phase_range requests_per_phase =
   (list_of (random_in_range requests_per_phase)
     (fun () -> (phase+(random (-phase_range) phase_range))))
 
-let generate_requests seed phases_count_range phase_range requests_per_phase disc_size =
-    Random.init seed;
+let generate_requests phases_count_range phase_range requests_per_phase disc_size =
     List.fold_left 
       (fun rest phase ->
         rest@(generate_requests_in_phase phase phase_range requests_per_phase))

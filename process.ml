@@ -15,6 +15,8 @@ class process frames_count =
     val mutable page_faults = 0
     val mutable had_page_fault = false
 
+    method page_faults=page_faults
+
     method find_page page = 
       List.find (fun frame -> frame.page==page) frames
 
