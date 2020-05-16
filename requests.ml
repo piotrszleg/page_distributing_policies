@@ -1,11 +1,5 @@
 open Utility;;
 
-type request = { 
-  time : int; 
-  process_index : int; 
-  page : int; 
-};;
-
 type range = {
   start : int;
   end_ : int;

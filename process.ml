@@ -43,7 +43,7 @@ class process frames_count =
           in (frame.counter <- 0) ; (* reset counter if page in frame was needed *)
           frame.changed<-true
       with Not_found ->
-        try let frame=self#find_empty (* change empty frame content to page *)
+        try let frame=self#find_empty (* change empty frame's content to page *)
             in (frame.page<-page) ; 
                (frame.counter <- 0) ;
                page_faults<-(page_faults+1) ;

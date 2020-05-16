@@ -1,0 +1,11 @@
+{
+    "files.associations": {
+        "*.ml": "ocaml",
+        "*.mli": "ocaml"
+    },
+    "reason.command.useWSL": true,
+    "reason.command.shell": "C:\\WINDOWS\\System32\\bash.exe", "reason.command.shellargs": [ "-ic" ],
+    "reason.diagnostics.tools": [
+        "merlin"
+      ]
+}
