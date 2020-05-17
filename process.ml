@@ -25,6 +25,8 @@ class process frames_count =
     method find_empty = 
       List.find (fun frame -> (frame.page==(-1))) frames
 
+    method stop=()
+
     method find_lru = 
       let lru frame1 frame2 =
         (if (frame1.counter>frame2.counter)

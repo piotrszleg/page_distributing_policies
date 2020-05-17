@@ -11,7 +11,7 @@ let rec merged_process_requests = function
   | processes_count -> 
     (List.mapi
       (fun index request -> {time=index; process_index=(processes_count-1); page=request})
-      (generate_requests {start=2; end_=5} 2 {start=3; end_=5 } 10))
+      (generate_requests {start=50; end_=100} 3 {start=2; end_=20 } 100))
     @(merged_process_requests (processes_count - 1) )
     ;;
 

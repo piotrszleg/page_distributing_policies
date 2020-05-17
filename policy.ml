@@ -26,8 +26,11 @@ class policy requests frames_count processes =
         self#update time
       done ;
       
-
     method print=
-      Printf.printf "total page faults %d"
+      let total_page_faults=List.fold_left 
+        (fun sum process->sum+process#page_faults)
+        0
+        processes
+      in Printf.printf "total page faults %d\n" total_page_faults
   end
 ;;
