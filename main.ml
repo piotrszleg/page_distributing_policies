@@ -3,6 +3,7 @@ open GlobalRequests;;
 open EqualPolicy;;
 open ProportionalPolicy;;
 open PageErrorRateControlPolicy;;
+open Requests;;
 
 let processes_count=5;;
 let frames_count=10*5;;
@@ -12,8 +13,15 @@ let print_request request=Printf.printf "{time : %d; process_index : %d; page : 
 List.iter print_request (global_requests 5);;
 *)
 
+let request_settings={
+  phases_count=100;
+  phase_range=3;
+  requests_per_phase={start=2; end_=20 };
+  disc_size=100;
+};;
+
 let evaluate_policy policy_constructor=
-   let policy=(policy_constructor (global_requests 123 processes_count) frames_count processes_count)
+   let policy=(policy_constructor (global_requests 123 processes_count request_settings) frames_count processes_count)
    in policy#run ;
       policy#print ;
    Printf.printf "\n"

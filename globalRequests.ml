@@ -6,16 +6,17 @@ type request = {
   page : int; 
 };;
 
-let rec merged_process_requests = function
+let rec merged_process_requests requests_settings processes_count=
+  match processes_count with
   0 ->  []
   | processes_count -> 
     (List.mapi
       (fun index request -> {time=index; process_index=(processes_count-1); page=request})
-      (generate_requests {start=50; end_=100} 3 {start=2; end_=20 } 100))
-    @(merged_process_requests (processes_count - 1) )
+      (generate_requests requests_settings))
+    @(merged_process_requests requests_settings (processes_count - 1) )
     ;;
 
 let compare_requests request1 request2 = request1.time-request2.time ;;
-let global_requests seed processes_count=
+let global_requests seed processes_count requests_settings=
   Random.init seed ;
-  List.sort compare_requests (merged_process_requests processes_count) ;;
+  List.sort compare_requests (merged_process_requests requests_settings processes_count) ;;
