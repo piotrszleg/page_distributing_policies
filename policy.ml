@@ -5,28 +5,36 @@ class policy requests frames_count processes =
     val processes=processes
     val requests=requests
     val frames_count=frames_count
+    val mutable time=0
 
-    method update time=
-      let requests_at_time=List.filter 
-          (fun request->request.time==time)
-          requests 
-        in  List.iter 
-              (fun request->(List.nth processes request.process_index)#push_request request.page)
-              requests_at_time ;
-            List.iter 
-              (fun process->process#update false)
-              processes
+    method update=
+      let requests_for_process process_index process=List.filter 
+          (fun request->request.time==process#time && request.process_index=process_index)
+          requests
+      in let should_continue=ref false
+      in List.iteri
+           (fun process_index process->
+             if process#is_running then
+               List.iter
+               (fun request->
+                 (process#push_request request.page;
+                 should_continue:=true))
+               (requests_for_process process_index process)
+               else should_continue:=true)(* wait for paused process *)
+           processes ;
+         List.iter 
+           (fun process->process#update false)
+           processes ;
+        time<-time+1 ;
+        !should_continue
 
     method run=
-      let last_request=List.fold_left 
-        (fun time request-> if request.time>time then request.time else time)
-        0
-        requests
-      in for time=0 to last_request do
-        self#update time
-      done ;
+      while self#update do () done
+
+    method name="policy"
       
     method print=
+      Printf.printf "%s\n" self#name ;
       let total_page_faults=List.fold_left 
         (fun sum process->sum+process#page_faults)
         0

@@ -14,10 +14,17 @@ class process frames_count =
     val mutable frames = list_of frames_count empty_frame
     val mutable page_faults = 0
     val mutable had_page_fault = false
+    val mutable visited_pages= 0
+    val mutable running=true
+    val mutable time=0
+
+    method time=time
 
     method frames_count=List.length frames
 
     method page_faults=page_faults
+
+    method visited_pages=visited_pages
 
     method find_page page = 
       List.find (fun frame -> frame.page==page) frames
@@ -25,7 +32,11 @@ class process frames_count =
     method find_empty = 
       List.find (fun frame -> (frame.page==(-1))) frames
 
-    method stop=()
+    method stop=running<-false
+
+    method resume=running<-true
+
+    method is_running=running
 
     method find_lru = 
       let lru frame1 frame2 =
@@ -45,6 +56,7 @@ class process frames_count =
       printf "\n"
 
     method push_request page =
+      visited_pages<-visited_pages+1 ;
       try let frame=self#find_page page (* find page among frames *)
           in (frame.counter <- 0) ; (* reset counter if page in frame was needed *)
           frame.changed<-true
@@ -70,7 +82,17 @@ class process frames_count =
           (if frame.changed then frame.changed <- false))
           in List.iter update_frame frames ;
       if print then self#print ;
-      had_page_fault<-false
+      had_page_fault<-false ;
+      if running then time<-time+1
+
+    method set_frames_count count=
+      let difference=count-(List.length frames)
+      in if difference>0 then
+        frames <- (list_of difference empty_frame) @ frames
+      else
+        for _=1 to difference do
+          self#remove_frame
+        done
 
     method add_frame =
       frames <- (empty_frame ()) :: frames

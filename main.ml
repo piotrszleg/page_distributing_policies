@@ -4,6 +4,7 @@ open EqualPolicy;;
 open ProportionalPolicy;;
 open PageErrorRateControlPolicy;;
 open Requests;;
+open ZoneModel;;
 
 let processes_count=5;;
 let frames_count=10*5;;
@@ -25,7 +26,9 @@ let evaluate_policy policy_constructor=
    in policy#run ;
       policy#print ;
    Printf.printf "\n"
+in let delta_t=20
 in
 evaluate_policy (new equal_policy) ;
 evaluate_policy (new proportional_policy) ;
-evaluate_policy (fun requests frames_count processes_count -> new page_error_rate_control_policy requests frames_count processes_count 20 3 5 10)
+evaluate_policy (fun requests frames_count processes_count -> new page_error_rate_control_policy requests frames_count processes_count delta_t 3 5 10) ;
+evaluate_policy (fun requests frames_count processes_count -> new zone_model requests frames_count processes_count delta_t )

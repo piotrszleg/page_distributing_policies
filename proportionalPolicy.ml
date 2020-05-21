@@ -60,11 +60,12 @@ class proportional_policy requests frames_count processes_count =
       in printf "frames count\t%d\n" process#frames_count ;
          printf "page faults\t%d\n---\n" process#page_faults
 
+    method! name="proportional policy"
+    
     method! print=
-      printf "proportional policy\n" ;
+      super#print ;
       for i=0 to (List.length processes-1) do
         self#print_process i
       done ;
-      super#print
   end
 ;;
