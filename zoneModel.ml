@@ -1,6 +1,21 @@
 open ProportionalPolicy;;
 
-class zone_model requests frames_count processes_count delta_t =
+(* source: https://stackoverflow.com/questions/17252851/how-do-i-take-the-last-n-elements-of-a-list *)
+let last_n n list= 
+  let rec drop n = function
+    [] -> []
+    | _ :: t as l -> 
+      if n = 0 
+      then l 
+      else drop (n-1) t
+  in let take_leftover list _= 
+    match list with
+      [] -> []
+      | _::t -> t
+  in List.fold_left take_leftover list (drop n list)
+  ;;
+
+class zone_model requests frames_count processes_count delta_t c =
   object(self)
     inherit proportional_policy requests frames_count processes_count
     as super
@@ -8,6 +23,10 @@ class zone_model requests frames_count processes_count delta_t =
     val mutable last_visited_pages=
         (List.init processes_count (fun _ -> 0))
     val mutable free_frames=0
+
+    (* each time c passes a new wss array is calculated and added here
+       wss_i is calculated from sum of wss_stack[-n:] where n is delta_t/c *)
+    val mutable wss_stack=([]:int list list)
 
     method redistributeFrame=
       try
@@ -43,10 +62,23 @@ class zone_model requests frames_count processes_count delta_t =
           currently_needed:=!currently_needed-wss)
         (self#sorted_processes wss) wss
 
-    method update_processes=
-      let wss=List.map2
+    method push_wss=
+      let wss=(List.map2
       (fun process process_last_visited_pages->process#visited_pages-process_last_visited_pages)
-      processes last_visited_pages 
+      processes last_visited_pages)
+      in wss_stack<-wss::wss_stack ;
+      last_visited_pages<-
+        List.init processes_count 
+        (fun i -> (List.nth processes i)#visited_pages)
+
+    method update_processes=
+      let from_stack=delta_t/c
+      in let wss=
+        (* sum last from_stack elements in wss_stack *)
+        List.fold_left
+        (List.map2 (+)) (* add elements in accumulator to elements in current *)
+        (List.init processes_count (fun _->0)) (* init array to 0s *)
+        (last_n from_stack wss_stack)
       in let d=List.fold_left (+) 0 wss
       in 
         (if d>frames_count then
@@ -58,12 +90,9 @@ class zone_model requests frames_count processes_count delta_t =
           if process#is_running then 
           process#set_frames_count wss)
         processes wss ;
-      last_visited_pages<-
-        List.init processes_count 
-        (fun i -> (List.nth processes i)#visited_pages)
 
     method! update=
-      if (time mod delta_t)=0 then 
+      if (time mod c)=0 then 
         self#update_processes ;
       super#update
 

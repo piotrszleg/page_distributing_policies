@@ -31,4 +31,4 @@ in
 evaluate_policy (new equal_policy) ;
 evaluate_policy (new proportional_policy) ;
 evaluate_policy (fun requests frames_count processes_count -> new page_error_rate_control_policy requests frames_count processes_count delta_t 3 5 10) ;
-evaluate_policy (fun requests frames_count processes_count -> new zone_model requests frames_count processes_count delta_t )
+evaluate_policy (fun requests frames_count processes_count -> new zone_model requests frames_count processes_count delta_t (delta_t/2) )
