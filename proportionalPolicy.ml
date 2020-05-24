@@ -1,7 +1,5 @@
 open Process;;
-open GlobalRequests;;
 open Policy;;
-open Printf;;
 
 let max_index list=
   let rec max_index_recursive list index =
@@ -34,38 +32,16 @@ let divide_weighted value weights=
   ;;
 
 class proportional_policy requests frames_count processes_count =
-  let process_requests index=
-    List.fold_left 
-      (fun counter request -> 
-        if request.process_index==index 
-          then counter+1 
-          else counter)
-      0
-      requests
-  in let weights=
+  let weights=
     List.init processes_count
-    (fun index -> (float_of_int (process_requests index))/.(float_of_int (List.length requests)) )
+    (fun index -> (float_of_int (process_requests requests index))/.(float_of_int (List.length requests)) )
   in let process_frames_count=divide_weighted frames_count weights
 
-  in object(self)
+  in object
     inherit policy requests frames_count (List.init 
       processes_count 
       (fun index -> new process (List.nth process_frames_count index)))
-    as super
-
-    method print_process index=
-      printf "process\t%d:\n" index ;
-      printf "requests\t%d\n" (process_requests index) ;
-      let process=List.nth processes index
-      in printf "frames count\t%d\n" process#frames_count ;
-         printf "page faults\t%d\n---\n" process#page_faults
 
     method! name="proportional policy"
-    
-    method! print=
-      super#print ;
-      for i=0 to (List.length processes-1) do
-        self#print_process i
-      done ;
   end
 ;;

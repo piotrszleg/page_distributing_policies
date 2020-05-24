@@ -25,7 +25,7 @@ class zone_model requests frames_count processes_count delta_t c =
     val mutable free_frames=0
 
     (* each time c passes a new wss array is calculated and added here
-       wss_i is calculated from sum of wss_stack[-n:] where n is delta_t/c *)
+       wss_i is calculated from sum of wss_stack[-n:] where n=delta_t/c *)
     val mutable wss_stack=([]:int list list)
 
     method redistributeFrame=
