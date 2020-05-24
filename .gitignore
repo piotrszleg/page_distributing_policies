@@ -2,4 +2,4 @@ _build
 *.cmi
 *.cmx
 *.o
-output\data.js
+output/data.js
