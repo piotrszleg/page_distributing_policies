@@ -104,7 +104,9 @@ class policy requests frames_count processes =
         )
         rotated
       in `Assoc [
-          ("type", `String "plot");
+          ("type", `String "line");
+          ("xAxis", `String "time");
+          ("yAxis", `String "frames");
           ("data", `List converted)
           ]
 

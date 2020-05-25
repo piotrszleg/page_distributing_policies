@@ -27,9 +27,25 @@ let request_settings={
 
 let json_output=ref ([]:Basic.t list);;
 
+let requests=global_requests 123 processes_count request_settings;;
+
+let requests_as_json_points=
+   List.map
+   (fun request->`Assoc [
+      "x", `Int request.time;
+      "y", `Int request.process_index
+   ])
+   requests
+in let requests_plot=`Assoc [
+   ("type", `String "scatter");
+   ("xAxis", `String "time");
+   ("yAxis", `String "process");
+   ("data", `List [`List requests_as_json_points] )
+] in
+json_output:=requests_plot::!json_output;
+
 let evaluate_policy policy_constructor=
-   
-   let policy=(policy_constructor (global_requests 123 processes_count request_settings) frames_count processes_count)
+   let policy=(policy_constructor requests frames_count processes_count)
    in policy#run ;
       policy#print ;
       json_output:=policy#table_json::!json_output;

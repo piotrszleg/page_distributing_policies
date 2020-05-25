@@ -28,31 +28,29 @@ function generateTable(data, highlighted_rows) {
     }
     document.querySelector("main").appendChild(table);
 }
-
-// http://blog.adamcole.ca/2011/11/simple-javascript-rainbow-color.html
-function rainbowStop(h) 
-{
-    let f= (n,k=(n+h*12)%12) => .5-.5*Math.max(Math.min(k-3,9-k,1),-1);  
-    let rgb2hex = (r,g,b) => "#"+[r,g,b].map(x=>Math.round(x*255).toString(16).padStart(2,0)).join('');
-    return ( rgb2hex(f(0), f(8), f(4)) );
-}
-
-function generatePlot(data){
+function makeCanvas(){
     let canvas = document.createElement("canvas");
     canvas.style.width="800px";
     canvas.style.height="600px";
+    document.querySelector("main").appendChild(canvas);
+    return canvas;
+}
+function linePlot(data, xAxis, yAxis){
+    let canvas = makeCanvas();
 
     let max_length=data[0].length;
     let labels=new Array(max_length);
     for(let i=0; i<max_length; i++){
         labels[i]=i;
     }
-
+    let colorsCount=data.length;
+    let colorStep=360/colorsCount;// hue is in range 0-360
+    let saturation=40;
+    let lightness=100;
     let converted_data={
         labels:labels,
-        
         datasets:data.map((element, index)=>{
-            let color=rainbowStop(0.15*index)+"50";
+            let color=colorsys.hsv2Hex(index*colorStep, saturation, lightness);
             return {
                 borderColor: color,
                 backgroundColor: color,
@@ -63,17 +61,65 @@ function generatePlot(data){
         })
     }
 
+    let scales={}
+    if (xAxis!=undefined){
+        scales.xAxes=[{
+            scaleLabel: {
+              display: true,
+              labelString: xAxis
+            }
+        }]
+    }
+    if(yAxis!=undefined){
+        scales.yAxes=[{
+            scaleLabel: {
+              display: true,
+              labelString: yAxis
+            }
+        }]
+    }
+
     Chart.Line(canvas.getContext('2d'), {
         data: converted_data,
+        options:{scales:scales}
     })
-    document.querySelector("main").appendChild(canvas);
+    
+}
+
+function scatterPlot(data, xAxis, yAxis){
+    let canvas = makeCanvas();
+
+    let scales={}
+    if (xAxis!=undefined){
+        scales.xAxes=[{
+            scaleLabel: {
+              display: true,
+              labelString: xAxis
+            }
+        }]
+    }
+    if(yAxis!=undefined){
+        scales.yAxes=[{
+            scaleLabel: {
+              display: true,
+              labelString: yAxis
+            }
+        }]
+    }
+
+    Chart.Scatter(canvas.getContext('2d'), {
+        data: {datasets: data.map(element=>({data:element}) )},
+        options:{scales:scales}
+    })
 }
 
 for (let plot of data) {
     if(plot.type=="table"){
         generateTable(plot.cells, plot.highlighted_rows);
-    } else if(plot.type=="plot"){
-        generatePlot(plot.data);
+    } else if(plot.type=="line"){
+        linePlot(plot.data, plot.xAxis, plot.yAxis);
+    } else if(plot.type=="scatter"){
+        scatterPlot(plot.data, plot.xAxis, plot.yAxis);
     } else {
         throw new Error('Unknown plot type');
     }
