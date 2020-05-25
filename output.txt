@@ -1,0 +1,182 @@
+equal policy
+process	0:
+requests	1081
+frames count	10
+page faults	433
+---
+process	1:
+requests	1050
+frames count	10
+page faults	439
+---
+process	2:
+requests	956
+frames count	10
+page faults	413
+---
+process	3:
+requests	1045
+frames count	10
+page faults	410
+---
+process	4:
+requests	1027
+frames count	10
+page faults	424
+---
+total page faults 2119
+
+proportional policy
+process	0:
+requests	1081
+frames count	11
+page faults	428
+---
+process	1:
+requests	1050
+frames count	11
+page faults	430
+---
+process	2:
+requests	956
+frames count	9
+page faults	419
+---
+process	3:
+requests	1045
+frames count	10
+page faults	410
+---
+process	4:
+requests	1027
+frames count	9
+page faults	426
+---
+total page faults 2113
+
+e=0, running=true	e=0, running=true	e=0, running=true	e=0, running=true	e=0, running=true	
+e=12, running=true	e=9, running=true	e=13, running=true	e=14, running=true	e=11, running=true	
+e=7, running=true	e=9, running=true	e=9, running=true	e=10, running=true	e=7, running=true	
+e=8, running=true	e=8, running=true	e=7, running=true	e=9, running=true	e=9, running=true	
+e=6, running=true	e=9, running=true	e=8, running=true	e=6, running=true	e=8, running=true	
+e=4, running=true	e=10, running=true	e=7, running=true	e=10, running=true	e=7, running=true	
+e=9, running=true	e=8, running=true	e=8, running=true	e=16, running=true	e=6, running=true	
+e=5, running=true	e=7, running=true	e=3, running=true	e=0, running=false	e=9, running=true	
+e=6, running=true	e=11, running=true	e=10, running=true	e=0, running=false	e=6, running=true	
+e=5, running=true	e=6, running=true	e=2, running=true	e=0, running=true	e=10, running=true	
+e=11, running=true	e=10, running=true	e=5, running=true	e=16, running=true	e=6, running=true	
+e=8, running=true	e=4, running=true	e=11, running=true	e=0, running=true	e=4, running=true	
+e=7, running=true	e=5, running=true	e=0, running=false	e=16, running=true	e=12, running=true	
+e=12, running=true	e=7, running=true	e=0, running=false	e=10, running=true	e=10, running=true	
+e=8, running=true	e=9, running=true	e=0, running=false	e=14, running=true	e=8, running=true	
+e=10, running=true	e=7, running=true	e=15, running=true	e=0, running=true	e=7, running=true	
+e=6, running=true	e=9, running=true	e=0, running=false	e=18, running=true	e=7, running=true	
+e=8, running=true	e=7, running=true	e=17, running=true	e=0, running=true	e=8, running=true	
+e=5, running=true	e=6, running=true	e=0, running=false	e=16, running=true	e=8, running=true	
+e=8, running=true	e=8, running=true	e=18, running=true	e=0, running=true	e=7, running=true	
+e=6, running=true	e=5, running=true	e=0, running=false	e=17, running=true	e=7, running=true	
+e=7, running=true	e=9, running=true	e=19, running=true	e=0, running=true	e=9, running=true	
+e=7, running=true	e=6, running=true	e=0, running=false	e=14, running=true	e=11, running=true	
+e=9, running=true	e=11, running=true	e=16, running=true	e=19, running=true	e=0, running=false	
+e=8, running=true	e=6, running=true	e=18, running=true	e=15, running=true	e=0, running=false	
+e=4, running=true	e=6, running=true	e=16, running=true	e=12, running=true	e=0, running=false	
+e=7, running=true	e=10, running=true	e=13, running=true	e=10, running=true	e=0, running=false	
+e=11, running=true	e=6, running=true	e=5, running=true	e=7, running=true	e=0, running=false	
+e=12, running=true	e=5, running=true	e=10, running=true	e=8, running=true	e=0, running=true	
+e=0, running=false	e=11, running=true	e=11, running=true	e=14, running=true	e=17, running=true	
+e=0, running=false	e=7, running=true	e=9, running=true	e=12, running=true	e=13, running=true	
+e=0, running=false	e=5, running=true	e=7, running=true	e=12, running=true	e=14, running=true	
+e=0, running=false	e=6, running=true	e=8, running=true	e=9, running=true	e=8, running=true	
+e=0, running=false	e=6, running=true	e=8, running=true	e=7, running=true	e=8, running=true	
+e=0, running=false	e=6, running=true	e=4, running=true	e=6, running=true	e=9, running=true	
+e=0, running=false	e=4, running=true	e=5, running=true	e=8, running=true	e=9, running=true	
+e=0, running=false	e=7, running=true	e=12, running=true	e=6, running=true	e=13, running=true	
+e=17, running=true	e=9, running=true	e=0, running=false	e=10, running=true	e=5, running=true	
+e=14, running=true	e=7, running=true	e=0, running=false	e=8, running=true	e=6, running=true	
+e=15, running=true	e=9, running=true	e=0, running=false	e=6, running=true	e=12, running=true	
+e=13, running=true	e=8, running=true	e=16, running=true	e=9, running=true	e=0, running=false	
+e=8, running=true	e=2, running=true	e=14, running=true	e=5, running=true	e=0, running=true	
+e=9, running=true	e=0, running=true	e=12, running=true	e=8, running=true	e=18, running=true	
+e=6, running=true	e=6, running=true	e=12, running=true	e=9, running=true	e=0, running=true	
+e=9, running=true	e=10, running=true	e=0, running=false	e=2, running=true	e=17, running=true	
+e=10, running=true	e=6, running=true	e=15, running=true	e=14, running=true	e=0, running=true	
+e=6, running=true	e=11, running=true	e=19, running=true	e=0, running=false	e=16, running=true	
+e=9, running=true	e=9, running=true	e=13, running=true	e=0, running=false	e=14, running=true	
+e=8, running=true	e=10, running=true	e=9, running=true	e=0, running=false	e=11, running=true	
+e=6, running=true	e=8, running=true	e=10, running=true	e=0, running=false	e=8, running=true	
+e=6, running=true	e=3, running=true	e=9, running=true	e=0, running=false	e=10, running=true	
+e=7, running=true	e=5, running=true	e=7, running=true	e=0, running=false	e=13, running=true	
+e=3, running=true	e=7, running=true	e=13, running=true	e=16, running=true	e=0, running=false	
+e=8, running=true	e=4, running=true	e=9, running=true	e=15, running=true	e=0, running=true	
+e=9, running=true	e=0, running=true	e=9, running=true	e=0, running=true	e=18, running=true	
+e=9, running=true	e=0, running=true	e=9, running=true	e=17, running=true	e=0, running=true	
+e=5, running=true	e=0, running=true	e=11, running=true	e=0, running=true	e=16, running=true	
+e=5, running=true	e=0, running=true	e=8, running=true	e=18, running=true	e=0, running=true	
+e=9, running=true	e=0, running=true	e=12, running=true	e=0, running=true	e=18, running=true	
+e=11, running=true	e=0, running=true	e=0, running=true	e=17, running=true	e=13, running=true	
+e=4, running=true	e=0, running=true	e=13, running=true	e=12, running=true	e=14, running=true	
+e=4, running=true	e=0, running=true	e=0, running=true	e=12, running=true	e=12, running=true	
+e=8, running=true	e=0, running=true	e=0, running=true	e=9, running=true	e=7, running=true	
+e=0, running=true	e=0, running=true	e=0, running=true	e=9, running=true	e=13, running=true	
+e=0, running=true	e=0, running=true	e=0, running=true	e=7, running=true	e=7, running=true	
+e=0, running=true	e=0, running=true	e=0, running=true	e=6, running=true	e=12, running=true	
+e=0, running=true	e=0, running=true	e=0, running=true	e=10, running=true	e=1, running=true	
+e=0, running=true	e=0, running=true	e=0, running=true	e=9, running=true	e=0, running=true	
+e=0, running=true	e=0, running=true	e=0, running=true	e=7, running=true	e=0, running=true	
+e=0, running=true	e=0, running=true	e=0, running=true	e=8, running=true	e=0, running=true	
+page_error_rate_control_policy
+process	0:
+requests	1081
+frames count	11
+page faults	434
+---
+process	1:
+requests	1050
+frames count	14
+page faults	379
+---
+process	2:
+requests	956
+frames count	1
+page faults	514
+---
+process	3:
+requests	1045
+frames count	12
+page faults	574
+---
+process	4:
+requests	1027
+frames count	4
+page faults	529
+---
+total page faults 2430
+
+zone_model
+process	0:
+requests	1081
+frames count	10
+page faults	434
+---
+process	1:
+requests	1050
+frames count	5
+page faults	441
+---
+process	2:
+requests	956
+frames count	1
+page faults	413
+---
+process	3:
+requests	1045
+frames count	5
+page faults	411
+---
+process	4:
+requests	1027
+frames count	2
+page faults	426
+---
+total page faults 2125
+

@@ -32,13 +32,16 @@ class process frames_count =
     method find_empty = 
       List.find (fun frame -> (frame.page==(-1))) frames
 
-    method stop=running<-false
+    method stop=
+      (frames<-[];
+      running<-false)
 
     method resume=running<-true
 
     method is_running=running
 
-    method find_lru = 
+    method find_lru =
+      if frames==[] then raise Not_found ;
       let lru frame1 frame2 =
         (if (frame1.counter>frame2.counter)
         then frame1
@@ -86,20 +89,24 @@ class process frames_count =
       if running then time<-time+1
 
     method set_frames_count count=
-      let difference=count-(List.length frames)
+      let difference=count-self#frames_count
       in if difference>0 then
-        frames <- (list_of difference empty_frame) @ frames
-      else
-        for _=1 to difference do
+        (frames <- (list_of difference empty_frame) @ frames ;
+        assert (count==self#frames_count))
+      else if difference<0 then
+        (for _=1 to -difference do
           self#remove_frame
-        done
+        done ;
+        assert (count==self#frames_count))
 
     method add_frame =
       frames <- (empty_frame ()) :: frames
 
     method remove_frame = 
-      let lru = self#find_lru
-      in frames <- List.filter ((!=) lru) frames
+      try
+        let lru = self#find_lru
+        in frames <- List.filter ((!=) lru) frames
+      with Not_found ->()
         
   end
 ;;

@@ -1,19 +1,36 @@
 open ProportionalPolicy;;
+open Printf;;
 
 (* source: https://stackoverflow.com/questions/17252851/how-do-i-take-the-last-n-elements-of-a-list *)
 let last_n n list= 
   let rec drop n = function
-    [] -> []
-    | _ :: t as l -> 
-      if n = 0 
-      then l 
-      else drop (n-1) t
+  [] -> []
+  | _ :: t as l -> 
+    if n = 0 
+    then l 
+    else drop (n-1) t
   in let take_leftover list _= 
     match list with
       [] -> []
       | _::t -> t
   in List.fold_left take_leftover list (drop n list)
   ;;
+
+let rec first_n n list=
+  if n==0 then []
+  else match list with
+    []->[]
+    | hd::tl->hd::(first_n (n-1) tl);;
+
+
+let print_int_list list=(printf "[";  List.iter (printf "%d, ") list; printf "]";)
+
+let sum_lists lists lists_length=
+  List.fold_left
+    (List.map2 (+))
+    (* add elements in accumulator to elements in current *)
+  (List.init lists_length (fun _->0)) (* init array to 0s *)
+  lists;;
 
 class zone_model requests frames_count processes_count delta_t c =
   object(self)
@@ -54,11 +71,13 @@ class zone_model requests frames_count processes_count delta_t c =
       sorted_pairs)
 
     method stop_processes wss needed_D=
+      printf "%d\n" needed_D ;
       let currently_needed=ref needed_D
       in List.iter2
         (fun process wss->
         if process#is_running && !currently_needed>0 then 
-          process#stop ;
+          process#set_frames_count 0;
+          process#stop;
           currently_needed:=!currently_needed-wss)
         (self#sorted_processes wss) wss
 
@@ -67,27 +86,30 @@ class zone_model requests frames_count processes_count delta_t c =
       (fun process process_last_visited_pages->process#visited_pages-process_last_visited_pages)
       processes last_visited_pages)
       in wss_stack<-wss::wss_stack ;
-      last_visited_pages<-
-        List.init processes_count 
-        (fun i -> (List.nth processes i)#visited_pages)
+      last_visited_pages<-List.map (fun process->process#visited_pages) processes
 
     method update_processes=
+      self#push_wss ;
       let from_stack=delta_t/c
       in let wss=
         (* sum last from_stack elements in wss_stack *)
-        List.fold_left
-        (List.map2 (+)) (* add elements in accumulator to elements in current *)
-        (List.init processes_count (fun _->0)) (* init array to 0s *)
-        (last_n from_stack wss_stack)
-      in let d=List.fold_left (+) 0 wss
-      in 
+        sum_lists
+        (first_n from_stack wss_stack)
+        processes_count
+      in let d=List.fold_left2
+        (* sum wss only for running processes *)
+        (fun sum process wss->
+          if process#is_running then sum+wss
+          else sum)
+        0 processes wss
+      in
         (if d>frames_count then
             self#stop_processes wss (d-frames_count)
          else if d<frames_count then
             self#redistributeFrame ) ;
         List.iter2
         (fun process wss->
-          if process#is_running then 
+          if process#is_running && wss>0 then 
           process#set_frames_count wss)
         processes wss ;
 
