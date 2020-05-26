@@ -3,7 +3,7 @@ open Evaluator;;
 open Utility;;
 open Requests;;
 
-let preset=2;;
+let preset=0;;
 let ()=
 match preset with
 0->

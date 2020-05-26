@@ -22,6 +22,9 @@ let rec first_n n list=
     []->[]
     | hd::tl->hd::(first_n (n-1) tl);;
 
+let push_sinking list element max_length=
+  let after_adding=element::list
+  in first_n max_length after_adding;;
 
 let print_int_list list=(printf "[";  List.iter (printf "%d, ") list; printf "]";)
 
@@ -86,16 +89,15 @@ class zone_model requests frames_count processes_count process_sizes delta_t c =
       let wss=(List.map2
       (fun process process_last_visited_pages->process#visited_pages-process_last_visited_pages)
       processes last_visited_pages)
-      in wss_stack<-wss::wss_stack ;
+      in let on_stack=delta_t/c
+      in wss_stack<-push_sinking wss_stack wss on_stack;
       last_visited_pages<-List.map (fun process->process#visited_pages) processes
 
     method update_processes=
       self#push_wss ;
-      let from_stack=delta_t/c
-      in let wss=
-        (* sum last from_stack elements in wss_stack *)
+      let wss=
         sum_lists
-        (first_n from_stack wss_stack)
+        wss_stack
         processes_count
       in let d=List.fold_left2
         (* sum wss only for running processes *)
