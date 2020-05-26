@@ -1,9 +1,9 @@
 open ProportionalPolicy;;
 (*open Printf;;*)
 
-class page_error_rate_control_policy requests frames_count processes_count delta_t lower upper stop_height =
+class page_error_rate_control_policy requests frames_count processes_count process_sizes delta_t lower upper stop_height =
   object(self)
-    inherit proportional_policy requests frames_count processes_count
+    inherit proportional_policy requests frames_count processes_count process_sizes
     as super
 
     val mutable last_page_faults=

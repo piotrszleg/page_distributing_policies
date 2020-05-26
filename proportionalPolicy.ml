@@ -31,10 +31,12 @@ let divide_weighted value weights=
       else 0)
   ;;
 
-class proportional_policy requests frames_count processes_count =
-  let weights=
-    List.init processes_count
-    (fun index -> (float_of_int (process_requests requests index))/.(float_of_int (List.length requests)) )
+class proportional_policy requests frames_count processes_count process_sizes=
+  let sum=List.fold_left (+) 0 process_sizes
+  in let weights=
+    List.map 
+    (fun size -> (float_of_int size)/.(float_of_int sum))
+    process_sizes
   in let process_frames_count=divide_weighted frames_count weights
 
   in object

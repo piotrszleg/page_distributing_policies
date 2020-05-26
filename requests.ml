@@ -8,7 +8,7 @@ type requests_settings={
   phase_range : int;
   phases_distance:range;
   requests_per_phase : range;
-  process_memory : int;
+  process_sizes : int list;
 };;
 
 let random from to_=from+(Random.int (to_-from) ) ;;
@@ -30,8 +30,8 @@ type request = {
 
 let connect_lists=List.fold_left (@) []
 
-let generate_requests requests_settings offset=
-    let phases=(generate_phases requests_settings.phases_count requests_settings.phase_range requests_settings.process_memory)
+let generate_requests requests_settings offset process_size=
+    let phases=(generate_phases requests_settings.phases_count requests_settings.phase_range process_size)
     in let current_time=ref 0
     in let phases_requests=
       List.map
@@ -55,10 +55,13 @@ let generate_requests requests_settings offset=
 
 let merged_process_requests requests_settings processes_count=
   let result=ref []
+  in let current_offset=ref 0
   in for i=0 to processes_count-1 do
-    result:=(!result)@(List.map
+    let process_size=(List.nth requests_settings.process_sizes i)
+    in (result:=(!result)@(List.map
       (fun request -> {process_index=i; time=(request.time); page=(request.page)})
-      (generate_requests requests_settings ((i-1)*requests_settings.process_memory)))
+      (generate_requests requests_settings !current_offset process_size));
+      current_offset:=(!current_offset)+process_size)
   done;
   !result
   ;;

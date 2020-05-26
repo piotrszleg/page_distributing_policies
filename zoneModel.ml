@@ -32,9 +32,9 @@ let sum_lists lists lists_length=
   (List.init lists_length (fun _->0)) (* init array to 0s *)
   lists;;
 
-class zone_model requests frames_count processes_count delta_t c =
+class zone_model requests frames_count processes_count process_sizes delta_t c =
   object(self)
-    inherit proportional_policy requests frames_count processes_count
+    inherit proportional_policy requests frames_count processes_count process_sizes
     as super
 
     val mutable last_visited_pages=
