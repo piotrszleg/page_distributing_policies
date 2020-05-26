@@ -46,6 +46,7 @@ class policy requests frames_count processes =
       processes
     val processes=processes
     val requests=requests
+    val mutable stopped=0
 
     method update=
       let requests_for_process process_index process=List.filter 
@@ -161,13 +162,19 @@ class policy requests frames_count processes =
         (fun sum process->sum+process#page_faults)
         0
         processes
+      in let total_trashing=List.fold_left 
+        (fun sum process->sum+process#in_trashing)
+        0
+        processes
       in
         `Assoc [
           ("type", `String "table");
           ("highlighted_rows", (`List [`String "process_index"; `String "name"]));
           ("cells", `List ([
             `List [`String "name"; `String self#name];
-            `List [`String "total page faults"; `Int total_page_faults]
+            `List [`String "total page faults"; `Int total_page_faults];
+            `List [`String "total trashing"; `Int total_trashing];
+            `List [`String "process was stopped"; `Int stopped]
           ]@processes_json))
         ]
   end

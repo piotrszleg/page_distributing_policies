@@ -3,10 +3,6 @@ open Evaluator;;
 open Utility;;
 open Requests;;
 
-(*
-let print_request request=Printf.printf "{time : %d; process_index : %d; page : %d}\n" request.time request.process_index request.page ;;
-List.iter print_request (global_requests 5);;
-*)
 let preset=2;;
 let ()=
 match preset with

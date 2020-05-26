@@ -78,6 +78,7 @@ class zone_model requests frames_count processes_count process_sizes delta_t c =
         if process#is_running && !currently_needed>0 then 
           process#set_frames_count 0;
           process#stop;
+          stopped<-stopped+1;
           currently_needed:=!currently_needed-wss)
         (self#sorted_processes wss) wss
 

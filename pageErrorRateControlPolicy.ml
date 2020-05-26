@@ -25,7 +25,8 @@ class page_error_rate_control_policy requests frames_count processes_count proce
     method stop_process process=
       free_frames<-free_frames+process#frames_count ;
       self#redistribute_frames ;
-      process#stop
+      process#stop ;
+      stopped<-stopped+1
 
     method update_processes=
       List.iter2
