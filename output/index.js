@@ -41,7 +41,7 @@ function linePlot(data, xAxis, yAxis){
     let max_length=data[0].length;
     let labels=new Array(max_length);
     for(let i=0; i<max_length; i++){
-        labels[i]=i+1;
+        labels[i]=i.toString();
     }
     let colorsCount=data.length;
     let colorStep=360/colorsCount;// hue is in range 0-360
@@ -55,7 +55,7 @@ function linePlot(data, xAxis, yAxis){
                 borderColor: color,
                 backgroundColor: color,
                 data:element,
-                label:index.toString(),
+                label:labels[index],
                 fill: false,
             }
         })

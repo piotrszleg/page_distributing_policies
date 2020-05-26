@@ -9,19 +9,25 @@ open Printf;;
 let json_output_file="output/data.js"
 
 let processes_count=5;;
-let frames_count=10*5;;
+let frames_count=10*10;;
 
 (*
 let print_request request=Printf.printf "{time : %d; process_index : %d; page : %d}\n" request.time request.process_index request.page ;;
 List.iter print_request (global_requests 5);;
 *)
 
+let process_sizes=
+   List.init
+   processes_count
+   (fun _->random 10 100)
+;;
+
 let request_settings={
   phases_count=20;
   phase_range=3;
   phases_distance={start=5; end_=10 };
   requests_per_phase={start=2; end_=20 };
-  disc_size=100;
+  process_memory=100;
 };;
 
 let json_output=ref ([]:Basic.t list);;
@@ -69,6 +75,6 @@ in
 evaluate_policy (new equal_policy) ;
 evaluate_policy (new proportional_policy) ;
 evaluate_policy (fun requests frames_count processes_count -> new page_error_rate_control_policy requests frames_count processes_count delta_t 3 5 10) ;
-evaluate_policy (fun requests frames_count processes_count -> new zone_model requests frames_count processes_count 12 3 ) ;
+evaluate_policy (fun requests frames_count processes_count -> new zone_model requests frames_count processes_count 20 10 ) ;
 let file = open_out json_output_file
 in fprintf file "data="; Basic.pretty_to_channel file (`List (List.rev !json_output))

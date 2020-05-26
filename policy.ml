@@ -97,6 +97,7 @@ class policy requests frames_count processes =
         `List [`String "requests"; `Int (process_requests requests index)];
         `List [`String "frames count"; `Int process#frames_count];
         `List [`String "page faults"; `Int process#page_faults];
+        `List [`String "trashing"; `Int process#in_trashing];
       ]
       
     method print=

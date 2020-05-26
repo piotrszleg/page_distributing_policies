@@ -9,6 +9,41 @@ type frame= {
 
 let empty_frame ()={page=(-1); counter=0; changed=false};;
 
+class trashing_observer to_start to_end=
+  object(self)
+    val mutable is_trashing=false
+    val mutable start_counter=0
+    val mutable end_counter=0
+    val mutable in_trashing=0
+
+    method update_trashing page_fault=
+      if not page_fault 
+      then if end_counter==to_end 
+           then is_trashing<-false
+           else end_counter<-end_counter+1
+      else begin
+          in_trashing<-in_trashing+1 ;
+          end_counter<-0
+      end
+
+    method update_not_trashing page_fault=
+      if page_fault 
+      then if start_counter==to_start
+           then is_trashing<-true
+           else start_counter<-start_counter+1
+      else begin
+          start_counter<-0
+      end
+
+    method update page_fault=
+      if is_trashing 
+      then self#update_trashing page_fault
+      else self#update_not_trashing page_fault
+
+    method in_trashing=in_trashing
+  end
+;;
+
 class process frames_count =
   object(self)
     val mutable frames = list_of frames_count empty_frame
@@ -18,6 +53,9 @@ class process frames_count =
     val mutable visited_pages= 0
     val mutable running=true
     val mutable time=0
+    val trashing_observer=new trashing_observer 1 2
+
+    method in_trashing=trashing_observer#in_trashing
 
     method time=time
 
@@ -88,6 +126,7 @@ class process frames_count =
           (if frame.changed then frame.changed <- false))
           in List.iter update_frame frames ;
       if print then self#print ;
+      (trashing_observer#update had_page_fault);
       had_page_fault_previously<-had_page_fault ;
       had_page_fault<-false ;
       if running then time<-time+1
