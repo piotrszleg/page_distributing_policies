@@ -1,7 +1,7 @@
 open Utility;;
 
 type requests_settings={
-  phases_count : int;
+  phases_count : range;
   phase_range : int;
   phases_distance:range;
   requests_per_phase : range;
@@ -24,7 +24,8 @@ type request = {
 let connect_lists=List.fold_left (@) []
 
 let generate_requests requests_settings offset process_size=
-    let phases=(generate_phases requests_settings.phases_count requests_settings.phase_range process_size)
+    let phases_count=random_in_range requests_settings.phases_count
+    in let phases=(generate_phases phases_count requests_settings.phase_range process_size)
     in let current_time=ref 0
     in let phases_requests=
       List.map

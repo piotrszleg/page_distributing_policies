@@ -20,7 +20,7 @@ match preset with
    process_sizes={start=10; end_=100};
    
    make_plots=true }
-   { phases_count=20;
+   { phases_count={start=14; end_=20};
    phase_range=3;
    phases_distance={start=5; end_=10 };
    requests_per_phase={start=2; end_=20 }; }
@@ -38,7 +38,7 @@ match preset with
    process_sizes={start=10; end_=100};
    
    make_plots=true }
-   { phases_count=50;
+   { phases_count={start=40; end_=50};
    phase_range=3;
    phases_distance={start=10; end_=30 };
    requests_per_phase={start=2; end_=20 }; }
@@ -56,7 +56,7 @@ match preset with
    process_sizes={start=50; end_=200};
    
    make_plots=false }
-   { phases_count=20;
+   { phases_count={start=15; end_=20};
    phase_range=3;
    phases_distance={start=5; end_=10 };
    requests_per_phase={start=2; end_=20 }; }
