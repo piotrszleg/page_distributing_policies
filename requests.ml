@@ -1,18 +1,11 @@
-type range = {
-  start : int;
-  end_ : int;
-};;
+open Utility;;
 
 type requests_settings={
   phases_count : int;
   phase_range : int;
   phases_distance:range;
   requests_per_phase : range;
-  process_sizes : int list;
 };;
-
-let random from to_=from+(Random.int (to_-from) ) ;;
-let random_in_range range=random range.start range.end_ ;;
 
 let generate_phases phases_count phase_range process_memory  =
   List.init phases_count 
@@ -53,11 +46,11 @@ let generate_requests requests_settings offset process_size=
       phases
     in connect_lists phases_requests
 
-let merged_process_requests requests_settings processes_count=
+let merged_process_requests requests_settings processes_count process_sizes=
   let result=ref []
   in let current_offset=ref 0
   in for i=0 to processes_count-1 do
-    let process_size=(List.nth requests_settings.process_sizes i)
+    let process_size=(List.nth process_sizes i)
     in (result:=(!result)@(List.map
       (fun request -> {process_index=i; time=(request.time); page=(request.page)})
       (generate_requests requests_settings !current_offset process_size));
@@ -67,6 +60,6 @@ let merged_process_requests requests_settings processes_count=
   ;;
 
 let compare_requests request1 request2 = request1.time-request2.time ;;
-let global_requests seed processes_count requests_settings=
+let global_requests seed processes_count process_sizes requests_settings=
   Random.init seed ;
-  List.sort compare_requests (merged_process_requests requests_settings processes_count) ;;
+  List.sort compare_requests (merged_process_requests requests_settings processes_count process_sizes) ;;

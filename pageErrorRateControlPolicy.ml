@@ -1,7 +1,7 @@
 open ProportionalPolicy;;
 (*open Printf;;*)
 
-class page_error_rate_control_policy requests frames_count processes_count process_sizes delta_t lower upper stop_height =
+class page_error_rate_control_policy requests frames_count processes_count process_sizes delta_t lower upper stop =
   object(self)
     inherit proportional_policy requests frames_count processes_count process_sizes
     as super
@@ -39,7 +39,7 @@ class page_error_rate_control_policy requests frames_count processes_count proce
           else if e>upper && free_frames>0 then
             (process#add_frame ;
             free_frames<-free_frames-1)
-          else if e>stop_height then 
+          else if e>stop then 
             self#stop_process process ;
         )
       )
