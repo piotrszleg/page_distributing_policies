@@ -14,6 +14,7 @@ class process frames_count =
     val mutable frames = list_of frames_count empty_frame
     val mutable page_faults = 0
     val mutable had_page_fault = false
+    val mutable had_page_fault_previously=false
     val mutable visited_pages= 0
     val mutable running=true
     val mutable time=0
@@ -23,6 +24,8 @@ class process frames_count =
     method frames_count=List.length frames
 
     method page_faults=page_faults
+
+    method had_page_fault=had_page_fault_previously
 
     method visited_pages=visited_pages
 
@@ -85,6 +88,7 @@ class process frames_count =
           (if frame.changed then frame.changed <- false))
           in List.iter update_frame frames ;
       if print then self#print ;
+      had_page_fault_previously<-had_page_fault ;
       had_page_fault<-false ;
       if running then time<-time+1
 

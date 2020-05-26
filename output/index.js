@@ -41,7 +41,7 @@ function linePlot(data, xAxis, yAxis){
     let max_length=data[0].length;
     let labels=new Array(max_length);
     for(let i=0; i<max_length; i++){
-        labels[i]=i;
+        labels[i]=i+1;
     }
     let colorsCount=data.length;
     let colorStep=360/colorsCount;// hue is in range 0-360
@@ -108,9 +108,17 @@ function scatterPlot(data, xAxis, yAxis){
     }
 
     Chart.Scatter(canvas.getContext('2d'), {
-        data: {datasets: data.map(element=>({data:element}) )},
+        data: {datasets: data},
         options:{scales:scales}
     })
+}
+
+function header(text){
+    let header = document.createElement("h1");
+    header.classList.add("text-center");
+    header.innerText=text;
+    document.querySelector("main").appendChild(header);
+    return header;
 }
 
 for (let plot of data) {
@@ -120,6 +128,8 @@ for (let plot of data) {
         linePlot(plot.data, plot.xAxis, plot.yAxis);
     } else if(plot.type=="scatter"){
         scatterPlot(plot.data, plot.xAxis, plot.yAxis);
+    } else if(plot.type=="header"){
+        header(plot.text);
     } else {
         throw new Error('Unknown plot type');
     }

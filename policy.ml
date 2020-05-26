@@ -1,4 +1,4 @@
-open GlobalRequests;;
+open Requests;;
 open Yojson;;
 open Printf;;
 
@@ -22,39 +22,63 @@ let rotate list=
 
   (* array[0].map((val, index) => array.map(row => row[index]).reverse()); *)
 
+type page_fault = { 
+  occurence_time : int; 
+  process : int;
+};;
+
 class policy requests frames_count processes =
   object(self)
-    val processes=processes
-    val requests=requests
     val frames_count=frames_count
     val mutable time=0
     val mutable processes_frames_count=([]:int list list)
+    val mutable page_faults=([]:page_fault list)
+    val process_ends=
+      List.mapi
+      (fun process_index _->
+        List.fold_left
+        (fun max_time request->
+          if request.process_index==process_index && request.time>max_time 
+          then request.time 
+          else max_time)
+        0
+        requests)
+      processes
+    val processes=processes
+    val requests=requests
 
     method update=
       let requests_for_process process_index process=List.filter 
           (fun request->request.time==process#time && request.process_index=process_index)
           requests
-      in let should_continue=ref false
       in List.iteri
            (fun process_index process->
              if process#is_running && (process#frames_count>0) then
                List.iter
-               (fun request->
-                 (process#push_request request.page;
-                 should_continue:=true))
-               (requests_for_process process_index process)
-               else should_continue:=true)(* wait for paused process *)
+               (fun request->process#push_request request.page)
+               (requests_for_process process_index process))
            processes ;
          List.iter 
-           (fun process->process#update false)
-           processes ;
-          processes_frames_count<-
-            (List.map
-            (fun process->if process#is_running then process#frames_count else 0)
-            processes)
-            ::processes_frames_count;
+          (fun process->process#update false)
+          processes ;
+         processes_frames_count<-
+           (List.map
+           (fun process->if process#is_running then process#frames_count else 0)
+           processes)
+           ::processes_frames_count;
+         List.iteri
+          (fun process_index process->
+            if process#had_page_fault then
+              page_faults<-{occurence_time=time; process=process_index}::page_faults)
+          processes ;
         time<-time+1 ;
-        !should_continue
+        let should_continue=ref false;
+        in (List.iter2
+          (fun process process_end->
+            if process#time<process_end then should_continue:=true)
+          processes process_ends;
+          !should_continue)
+        
 
     method run=
       while self#update do () done
@@ -108,6 +132,26 @@ class policy requests frames_count processes =
           ("xAxis", `String "time");
           ("yAxis", `String "frames");
           ("data", `List converted)
+          ]
+
+    method page_faults_plot_json:Basic.t=
+      let converted=
+        List.map
+        (fun page_fault->`Assoc [
+          ("x", `Int page_fault.occurence_time);
+          ("y", `Int page_fault.process)
+        ])
+        page_faults
+      in `Assoc [
+          ("type", `String "scatter");
+          ("xAxis", `String "time");
+          ("yAxis", `String "process");
+          ("data", `List [
+            `Assoc [
+              "label", `String "page faults" ;
+              "borderColor", `String "#f09090";
+              "backgroundColor", `String "#f09090";
+              "data",`List converted]])
           ]
 
     method table_json:Basic.t=

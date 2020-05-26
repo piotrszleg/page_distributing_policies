@@ -1,5 +1,5 @@
 open ProportionalPolicy;;
-open Printf;;
+(*open Printf;;*)
 
 class page_error_rate_control_policy requests frames_count processes_count delta_t lower upper stop_height =
   object(self)
@@ -31,7 +31,7 @@ class page_error_rate_control_policy requests frames_count processes_count delta
       List.iter2
       (fun process last_page_faults->
         let e=process#page_faults-last_page_faults
-        in  printf "e=%d, running=%b\t" e (process#is_running);
+        in  (*printf "e=%d, running=%b\t" e (process#is_running);*)
           (if e<lower && process#frames_count>1 then
             (process#remove_frame ;
             free_frames<-free_frames+1 ;
@@ -46,8 +46,8 @@ class page_error_rate_control_policy requests frames_count processes_count delta
       processes last_page_faults ;
       last_page_faults<-
         List.map (fun process->process#page_faults)
-        processes ;
-      printf "\n"
+        processes (*;
+      printf "\n"*)
 
     method! update=
       if (time mod delta_t)=0 then 
