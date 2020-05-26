@@ -12,6 +12,7 @@ type evaluation_settings={
   page_error_rate_control_policy_lower:int;
   page_error_rate_control_policy_upper:int;
   page_error_rate_control_policy_stop:int;
+  page_error_rate_control_policy_resume:int;
   zone_model_delta_t:int;
   zone_model_c:int;
   
@@ -72,7 +73,8 @@ let evaluate_policies evaluation_settings requests_settings=
       evaluation_settings.page_error_rate_control_policy_delta_t 
       evaluation_settings.page_error_rate_control_policy_lower 
       evaluation_settings.page_error_rate_control_policy_upper
-      evaluation_settings.page_error_rate_control_policy_stop) ;
+      evaluation_settings.page_error_rate_control_policy_stop
+      evaluation_settings.page_error_rate_control_policy_resume) ;
     evaluate_policy (new zone_model 
       requests frames_count processes_count process_sizes 
       evaluation_settings.zone_model_delta_t evaluation_settings.zone_model_c ) ;

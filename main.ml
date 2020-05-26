@@ -12,6 +12,7 @@ match preset with
    page_error_rate_control_policy_lower=3;
    page_error_rate_control_policy_upper=5;
    page_error_rate_control_policy_stop=10;
+   page_error_rate_control_policy_resume=5;
    zone_model_delta_t=20;
    zone_model_c=10;
    
@@ -20,7 +21,7 @@ match preset with
    process_sizes={start=10; end_=100};
    
    make_plots=true }
-   { phases_count={start=14; end_=20};
+   { phases_count={start=12; end_=20};
    phase_range=3;
    phases_distance={start=5; end_=10 };
    requests_per_phase={start=2; end_=20 }; }
@@ -30,15 +31,16 @@ match preset with
    page_error_rate_control_policy_lower=3;
    page_error_rate_control_policy_upper=5;
    page_error_rate_control_policy_stop=10;
-   zone_model_delta_t=20;
-   zone_model_c=10;
+   page_error_rate_control_policy_resume=5;
+   zone_model_delta_t=40;
+   zone_model_c=20;
    
    frames_count=200;
    processes_count=10;
    process_sizes={start=10; end_=100};
    
    make_plots=true }
-   { phases_count={start=40; end_=50};
+   { phases_count={start=30; end_=50};
    phase_range=3;
    phases_distance={start=10; end_=30 };
    requests_per_phase={start=2; end_=20 }; }
@@ -48,6 +50,7 @@ match preset with
    page_error_rate_control_policy_lower=3;
    page_error_rate_control_policy_upper=5;
    page_error_rate_control_policy_stop=10;
+   page_error_rate_control_policy_resume=5;
    zone_model_delta_t=20;
    zone_model_c=10;
    
@@ -56,7 +59,7 @@ match preset with
    process_sizes={start=50; end_=200};
    
    make_plots=false }
-   { phases_count={start=15; end_=20};
+   { phases_count={start=12; end_=20};
    phase_range=3;
    phases_distance={start=5; end_=10 };
    requests_per_phase={start=2; end_=20 }; }

@@ -1,7 +1,7 @@
 open ProportionalPolicy;;
 (*open Printf;;*)
 
-class page_error_rate_control_policy requests frames_count processes_count process_sizes delta_t lower upper stop =
+class page_error_rate_control_policy requests frames_count processes_count process_sizes delta_t lower upper stop resume=
   object(self)
     inherit proportional_policy requests frames_count processes_count process_sizes
     as super
@@ -12,19 +12,20 @@ class page_error_rate_control_policy requests frames_count processes_count proce
 
     method redistribute_frames=
       try
-        while free_frames>0 do
+        while free_frames>resume do
           let process=List.find
             (fun process->not process#is_running)
             processes
-            in (process#add_frame ;
+            in (process#set_frames_count resume ;
                 process#resume ;
-                free_frames<-free_frames-1)
+                free_frames<-free_frames-resume)
         done
       with Not_found->()
 
     method stop_process process=
       free_frames<-free_frames+process#frames_count ;
       self#redistribute_frames ;
+      process#set_frames_count 0;
       process#stop ;
       stopped<-stopped+1
 
