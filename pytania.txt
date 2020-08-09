@@ -1,8 +1,0 @@
-reszta przy podziale stron w dwóch pierwszych algorytmach
-
-Sterowanie częstością błędów strony
-- czy proces ma powracać i na jakich warunkach (dodatkowa stała?)
-
-model strefowy 
-- czym różni się c od delta_t
-- kiedy proces ma "wracać do życia"
