@@ -40,8 +40,6 @@ class zone_model requests frames_count processes_count process_sizes delta_t c =
     inherit proportional_policy requests frames_count processes_count process_sizes
     as super
 
-    val mutable last_visited_pages=
-        (List.init processes_count (fun _ -> 0))
     val mutable free_frames=0
 
     (* each time c passes a new wss array is calculated and added here
@@ -86,12 +84,14 @@ class zone_model requests frames_count processes_count process_sizes delta_t c =
         (self#sorted_processes wss) wss
 
     method push_wss=
-      let wss=(List.map2
-      (fun process process_last_visited_pages->process#visited_pages-process_last_visited_pages)
-      processes last_visited_pages)
+      let wss=List.map
+      (fun process->process#visited_pages)
+      processes
       in let on_stack=delta_t/c
       in wss_stack<-push_sinking wss_stack wss on_stack;
-      last_visited_pages<-List.map (fun process->process#visited_pages) processes
+      List.iter 
+      (fun process->process#reset_visited_pages)
+      processes
 
     method update_processes=
       self#push_wss ;

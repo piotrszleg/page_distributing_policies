@@ -19,8 +19,11 @@ class trashing_observer to_start to_end=
     method update_trashing page_fault=
       if not page_fault 
       then if end_counter==to_end 
-           then is_trashing<-false
-           else end_counter<-end_counter+1
+          then is_trashing<-false
+          else begin
+            end_counter<-end_counter+1;
+            in_trashing<-in_trashing+1
+          end
       else begin
           in_trashing<-in_trashing+1 ;
           end_counter<-0
@@ -31,9 +34,7 @@ class trashing_observer to_start to_end=
       then if start_counter==to_start
            then is_trashing<-true
            else start_counter<-start_counter+1
-      else begin
-          start_counter<-0
-      end
+      else start_counter<-0
 
     method update page_fault=
       if is_trashing 
@@ -44,13 +45,21 @@ class trashing_observer to_start to_end=
   end
 ;;
 
+ module Int = struct 
+   type t = int 
+   (* use Pervasives compare *)
+   let compare = compare
+ end
+
+ module IntSet = Set.Make(Int)
+
 class process frames_count =
   object(self)
     val mutable frames = list_of frames_count empty_frame
     val mutable page_faults = 0
     val mutable had_page_fault = false
     val mutable had_page_fault_previously=false
-    val mutable visited_pages= 0
+    val mutable visited_pages=IntSet.empty
     val mutable running=true
     val mutable time=0
     val trashing_observer=new trashing_observer 1 2
@@ -61,11 +70,14 @@ class process frames_count =
 
     method frames_count=List.length frames
 
+    method reset_visited_pages=
+      visited_pages<-IntSet.empty
+
     method page_faults=page_faults
 
     method had_page_fault=had_page_fault_previously
 
-    method visited_pages=visited_pages
+    method visited_pages=IntSet.cardinal visited_pages
 
     method find_page page = 
       List.find (fun frame -> frame.page==page) frames
@@ -100,7 +112,7 @@ class process frames_count =
       printf "\n"
 
     method push_request page =
-      visited_pages<-visited_pages+1 ;
+      visited_pages<-IntSet.add page visited_pages ;
       try let frame=self#find_page page (* find page among frames *)
           in (frame.counter <- 0) ; (* reset counter if page in frame was needed *)
           frame.changed<-true

@@ -50,7 +50,7 @@ class policy requests frames_count processes =
 
     method update=
       let requests_for_process process_index process=List.filter 
-          (fun request->request.time==process#time && request.process_index=process_index)
+          (fun request->request.time==process#time && request.process_index==process_index)
           requests
       in List.iteri
            (fun process_index process->
